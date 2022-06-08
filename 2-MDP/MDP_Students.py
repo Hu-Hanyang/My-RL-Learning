@@ -23,16 +23,19 @@ Pss = [
 Pss = np.array(Pss)
 
 # rewards
-rewards = [-2, -2, -2, 10, 1, -1, 0]
+rewards = [-2, -2, -2, 10, 1, -1, 0]  # here one state corresponds one reward
 gamma = 0.5  # discount factor
 
 
 # calculation of returns Gt
 def compute_return(start_index=0, chain=None, gamma=0.5):
     retrn, power, gamma = 0.0, 0, gamma
-    for i in range(start_index, len(chain)):
-        retrn += np.power(gamma, power) * rewards[n_to_i[chain[i]]]
-        power += 1
+    if start_index > len(chain):
+        print('The state index is wrong!')
+    else:
+        for i in range(start_index, len(chain)):
+            retrn += np.power(gamma, power) * rewards[n_to_i[chain[i]]]
+            power += 1
     return retrn
 
 
@@ -40,9 +43,26 @@ chains = [
     ["C1", "C2", "C3", "Pass", "Sleep"],
     ["C1", "FB", "FB", "C1", "C2", "Sleep"],
     ["C1", "C2", "C3", "Pub", "C2", "C3", "Pass", "Sleep"],
-    ["C1", "FB", "FB", "C1", "C2", "C3", "Pub", "C1", "FB",\
-     "FB", "FB", "C1", "C2", "C3", "Pub", "C2", "Sleep"]
+    ["C1", "FB", "FB", "C1", "C2", "C3", "Pub", "C1", "FB", "FB", "FB", "C1", "C2", "C3", "Pub", "C2", "Sleep"]
 ]
 
-test = compute_return(0, chains[3], gamma=0.5)
-print(test)
+test = compute_return(2, chains[0], gamma=0.5)
+
+
+# print(test)
+
+
+# analytical solution: V = (I - \gamma P)^(-1)R
+def compute_value(Pss, rewards, num_states=7, gamma=0.05):
+    rewards = np.array(rewards).reshape((-1, 1))  # convert rewards to np.array and column vector
+    values = np.dot(np.linalg.inv(np.eye(num_states, num_states) - gamma * Pss), rewards)
+    return values
+
+
+values1 = compute_value(Pss, rewards, gamma=0.99999)
+# print(values1)
+
+
+from utils import str_key, display_dict
+from utils import set_prob, set_reward, get_prob, get_reward
+from utils import set_value, set_pi, get_value, get_pi
