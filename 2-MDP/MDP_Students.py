@@ -62,7 +62,7 @@ def compute_value(Pss, rewards, num_states=7, gamma=0.05):
 values1 = compute_value(Pss, rewards, gamma=0.99999)
 # print(values1)
 
-
+# verify the q\pi(s,a)
 from utils import str_key, display_dict
 from utils import set_prob, set_reward, get_prob, get_reward
 from utils import set_value, set_pi, get_value, get_pi
