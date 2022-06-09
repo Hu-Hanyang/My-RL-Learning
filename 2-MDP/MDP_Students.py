@@ -94,6 +94,7 @@ set_reward(R, S[2], A[1], -2)
 set_reward(R, S[2], A[4], 0)
 set_reward(R, S[3], A[1], 10)
 set_reward(R, S[3], A[3], +1)
+# display_dict(R)
 MDP = (S, A, R, P, gamma)  # define MDP as a tuple
 # set random policy: pi(a|s) = 0.5
 Pi = {}
@@ -130,8 +131,8 @@ def compute_v(MDP, V, Pi, s):
     return v_s
 
 
-# use value iteration to calculate the value function v
-def policy_evaluation(MDP, V, Pi):
+# use policy iteration to calculate the value function v
+def v_bellman(MDP, V, Pi):
     S, _, _, _, _ = MDP
     V_prime = V.copy()
     for s in S:
@@ -139,13 +140,13 @@ def policy_evaluation(MDP, V, Pi):
     return V_prime
 
 
-def value_iteration(MDP, V, Pi, n):
+def policy_evaluation(MDP, V, Pi, n):
     for i in range(n):
-        V = policy_evaluation(MDP, V, Pi)
+        V = v_bellman(MDP, V, Pi)
     return V
 
-V = value_iteration(MDP, V, Pi, 100)
-display_dict(V)
+V = policy_evaluation(MDP, V, Pi, 100)
+# display_dict(V)
 
 
 
