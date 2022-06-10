@@ -131,7 +131,7 @@ def compute_v(MDP, V, Pi, s):
     return v_s
 
 
-# use policy iteration to calculate the value function v
+# use policy evaluation to calculate the value function v
 def v_bellman(MDP, V, Pi):
     S, _, _, _, _ = MDP
     V_prime = V.copy()
