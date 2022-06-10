@@ -11,4 +11,4 @@
 
 ### 致谢
 
-感谢Haitong的帮助。
+感谢Haitong  (https://github.com/mahaitongdae ) 的帮助。
