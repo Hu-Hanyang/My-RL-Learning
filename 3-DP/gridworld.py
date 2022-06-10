@@ -34,8 +34,8 @@ gamma = 1.00
 MDP = (S, A, R, P, gamma)
 
 # uniform random policy and greedy policy
-# 这里有点奇怪，policy返回的居然是概率？
-def uniform_random_pi(MDP, V = None, s = None, a = None)
+# 这里有点奇怪，policy返回的居然是概率？this is wierd
+def uniform_random_pi(MDP, V = None, s = None, a = None):
     _, A, _, _ = MDP
     n = len(A)
     return 0 if n==0 else 1.0/n
@@ -62,5 +62,50 @@ def get_pi(Pi, s, a, MDP = None, V = None):
 def get_value(V, s):
     return V[s]
 
-def
+def get_reward(R, s, a):
+    return R(s, a)
+
+def get_prob(P, s, a, s1):  # get transition probability
+    return P(s, a, s1)
+
+def set_value(V, s, v):
+    V[s] = v
+
+def display_V(V):
+    for i in range(16):
+        print('{0:>6.2f}'.format(V[i]),end = " ")
+        if (i+1) % 4 == 0:
+            print('')
+        print()
+
+# Bellman Function
+# qpi(s, a)
+def compute_q(MDP, V, s, a):
+    S, A, R, P, gamma = MDP
+    q_sa = 0
+    for s_prime in S:
+        q_sa += get_prob(P, s, a, s_prime) * get_value(V, s_prime)
+        q_sa = get_reward(R, s, a) + gamma * q_sa
+    return q_sa
+
+# vpi(s)
+def compute_v(MDP, V, Pi, s):
+    S, A, R, P, gamma = MDP
+    v_s = 0
+    for a in A:
+        v_s += get_prob(Pi, s, a, MDP, V) * compute_q(MDP, V, s, a)
+    return v_s
+
+def update_V(MDP, V, Pi):
+    S, _, _, _, _ = MDP
+    V_prime = V.copy()
+    for s in S:
+        set_value(V_prime, s, compute_v(MDP, V_prime, Pi, s))
+    return V_prime
+
+
+
+
+
+
 
