@@ -55,21 +55,27 @@ def greedy_pi(MDP, V, s, a):
     if n == 0: return 0.0
     return 1.0/n if a in a_max_v else 0.0
 
+
 def get_pi(Pi, s, a, MDP = None, V = None):
     return Pi(MDP, V, s, a)
+
 
 # accessory functions
 def get_value(V, s):
     return V[s]
 
+
 def get_reward(R, s, a):
     return R(s, a)
+
 
 def get_prob(P, s, a, s1):  # get transition probability
     return P(s, a, s1)
 
+
 def set_value(V, s, v):
     V[s] = v
+
 
 def display_V(V):
     for i in range(16):
@@ -77,6 +83,7 @@ def display_V(V):
         if (i+1) % 4 == 0:
             print('')
         print()
+
 
 # Bellman Function
 # qpi(s, a)
@@ -88,13 +95,15 @@ def compute_q(MDP, V, s, a):
         q_sa = get_reward(R, s, a) + gamma * q_sa
     return q_sa
 
-# vpi(s)
+
+# vpi(s)只有这里的计算涉及到policy
 def compute_v(MDP, V, Pi, s):
     S, A, R, P, gamma = MDP
     v_s = 0
     for a in A:
-        v_s += get_prob(Pi, s, a, MDP, V) * compute_q(MDP, V, s, a)
+        v_s += get_pi(Pi, s, a, MDP, V) * compute_q(MDP, V, s, a)
     return v_s
+
 
 def update_V(MDP, V, Pi):
     S, _, _, _, _ = MDP
@@ -104,6 +113,48 @@ def update_V(MDP, V, Pi):
     return V_prime
 
 
+def policy_evaluation(MDP, V, Pi, n):
+    for i in range(n):
+        V = update_V(MDP, V, Pi)
+    return V
+
+
+def policy_iteration(MDP, V, Pi, n, m):
+    for i in range(m):
+        V = policy_evaluation(MDP, V, Pi, n)
+        Pi = greedy_pi
+    return V
+
+
+# value iteration 这里用maxq来做的，不是很理解
+def compute_v_from_max_q(MDP, V, s):
+    S, A, R, P, gamma = MDP
+    v_s = -float('inf')
+    for a in A:
+        qsa = compute_q(MDP, V, s, a)
+        if qsa >= v_s:
+            v_s = qsa
+    return v_s
+
+
+def update_V_without_pi(MDP, V):
+    S, _, _, _, _ = MDP
+    V_prime = V.copy()
+    for s in S:
+        set_value(V_prime, s, compute_v_from_max_q(MDP, V_prime, s))
+    return V_prime
+
+
+def value_iteration(MDP, V, n):
+    for i in range(n):
+        V = update_V_without_pi(MDP, V)
+    return V
+
+
+# using policy iteration
+V = [0 for _ in range(16)]  # initialize the state value functions
+V_pi = policy_iteration(MDP, V, greedy_pi, 1, 100)
+display_V(V_pi)
 
 
 
