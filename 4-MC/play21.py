@@ -30,7 +30,7 @@ class Game():
             elif card in ['J', 'Q', 'K']:
                 v = 10
             else:
-                v = 0
+                v = 0  # 这里我有问题
         finally:
             return v
 
@@ -40,3 +40,29 @@ class Game():
         cards = self.cards
         if cards is None:
             return 0, False
+        for card in cards:
+            v = self._value_of(card)
+            if v==1:
+                num_of_usable_ace += 1
+                v = 11
+            total_points += v
+            while total_points > 21 and num_of_usable_ace > 0:
+                total_points -= 10
+                num_of_usable_ace -= 1
+        return total_points, bool(num_of_usable_ace)
+
+    def receive(self, cards = []):
+        cards = list(cards)
+        for card in cards:
+            self.cards.append(card)
+
+    def discharge_cards(self):
+        self.cards.clear()
+
+    def cards_info(self):
+        self.cards_info('{}{}现在的牌：{}\n'.format(self.role, self, self.cards))
+
+    def _info(self, msg):
+        if self.display:
+            print(msg, end="")
+
