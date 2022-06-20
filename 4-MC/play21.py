@@ -60,7 +60,7 @@ class Game:
         self.cards.clear()
 
     def cards_info(self):
-        self.cards_info('{}{}现在的牌：{}\n'.format(self.role, self, self.cards))
+        self._info('{}{}现在的牌：{}\n'.format(self.role, self, self.cards))
 
     def _info(self, msg):
         if self.display:
@@ -145,7 +145,7 @@ class Arena():  # 游戏管理者
                 self.load_cards(self.cards_in_pool)
             cards.append(self.card_q.get())
         self._info('发了{}张牌({})给{}{}'.format(n, cards, gamer.role, gamer))
-        gamer.reveive(cards)
+        gamer.receive(cards)
         gamer.cards_info()
 
     def reward_of(self, dealer, player):  # 判断谁赢了
@@ -245,7 +245,13 @@ class Arena():  # 游戏管理者
             if self.display:
                 print(message, end='')
 
-
+# test
+A=["继续叫牌","停止叫牌"]
+display = False
+player = Player(A = A, display = display)
+dealer = Dealer(A = A, display = display)
+arena = Arena(A = A, display = display)
+arena.play_games(dealer, player, num = 2000)
 
 
 
