@@ -254,5 +254,21 @@ arena = Arena(A = A, display = display)
 arena.play_games(dealer, player, num = 2000)
 
 
+def policy_evaluate(episodes, V, Ns):  # every-visit Monte-Carlo
+    for episode, r in episodes:
+        for s, a in episode:
+            ns = get_dict(Ns, s)
+            v = get_dict(V, s)
+            set_dict(Ns, ns+1, s)
+            set_dict(V, v+(r-v)/(ns+1), s)  # incremental
+
+
+V = {} # value function
+Ns = {}  # 状态被访问的次数节点
+policy_evaluate(arena.episodes, V, Ns)
+
+
+
+
 
 
