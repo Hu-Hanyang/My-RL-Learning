@@ -4,3 +4,8 @@ from gym import Env
 from gridworld import WindyGridWorld
 from core import Agent
 from utils import learning_curve
+
+env = WindyGridWorld()
+env.reset()
+env.render()
+
