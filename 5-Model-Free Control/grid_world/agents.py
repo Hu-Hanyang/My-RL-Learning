@@ -30,7 +30,7 @@ class SarsaAgent(Agent):
         s0 = self.state
         if display:
             self.env.render()
-        a0 = self.perform_policy(s0, epsilon)
+        a0 = self.perform_policy(s0, epsilon)  # epsilon-greedy policy
         # print(self.action_t.name)
         time_in_episode, total_reward = 0, 0
         is_done = False
@@ -39,7 +39,7 @@ class SarsaAgent(Agent):
             s1, r1, is_done, info, total_reward = self.act(a0)
             if display:
                 self.env.render()
-            a1 = self.perform_policy(s1, epsilon)
+            a1 = self.perform_policy(s1, epsilon)  # Sarsa: epsilon-greedy policy
             old_q = get_dict(self.Q, s0, a0)
             q_prime = get_dict(self.Q, s1, a1)
             td_target = r1 + gamma * q_prime
@@ -53,7 +53,6 @@ class SarsaAgent(Agent):
         return time_in_episode, total_reward
     
 
-    
 class SarsaLambdaAgent(Agent):
     def __init__(self, env:Env, capacity:int = 20000):
         super(SarsaLambdaAgent, self).__init__(env, capacity)

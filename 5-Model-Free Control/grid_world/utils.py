@@ -20,11 +20,11 @@ def learning_curve(data, x_index = 0, y1_index = 1, y2_index = None, title = "",
         None 绘制曲线图
     '''
     fig, ax = plt.subplots()
-    x = data[x_index]
-    y1 = data[y1_index]
+    x = data[x_index]  # total_times
+    y1 = data[y1_index]  # episode_rewards
     ax.plot(x, y1, label = y1_legend)
     if y2_index is not None:
-        ax.plot(x, data[y2_index], label = y2_legend)
+        ax.plot(x, data[y2_index], label = y2_legend)  # num_episodes
     ax.grid(True, linestyle='-.')
     ax.tick_params(labelcolor='black', labelsize='medium', width=1)
     ax.set_xlabel(x_name)
