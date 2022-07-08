@@ -23,11 +23,10 @@ agent = SarsaAgent(env, capacity=10000)
 # data = agent.learning(max_episode_num = 180, display = False)
 statistics = agent.learning(gamma = 0.9, epsilon = 0.1, decaying_epsilon = True, alpha = 0.5, max_episode_num = 800, display = False )
 
-# agent.learning_method(epsilon=0.01, display=True)
+agent.learning_method(epsilon=0.01, display=True)
 
-# learning_curve(statistics, x_index=0, y1_index=2, y2_index=None)
-print(statistics[0])
-print(statistics[1])
+# learning_curve(statistics, x_index=2, y1_index=1, y2_index=None)
 
 env.reset()
 env.render()
+env.close()
