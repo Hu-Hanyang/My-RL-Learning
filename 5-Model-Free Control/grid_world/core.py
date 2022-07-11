@@ -196,7 +196,7 @@ class Agent(object):
         self.env = env  # 建立对环境对象的引用
         self.obs_space = env.observation_space if env is not None else None
         self.action_space = env.action_space if env is not None else None
-        self.S = [i for i in range(self.obs_space.n)]
+        self.S = [i for i in range(self.obs_space.n)]  # 这个.n是什么属性？
         self.A = [i for i in range(self.action_space.n)]
         self.Q = {}
         self.experience = Experience(capacity=capacity)
