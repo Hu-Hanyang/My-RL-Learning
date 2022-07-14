@@ -35,5 +35,5 @@ class Agent(object):
     def perform_policy(self, s, epsilon=0.05):
         Q = self.Q
         action = self.policy(self, s, Q, epsilon)
-        
+
 
