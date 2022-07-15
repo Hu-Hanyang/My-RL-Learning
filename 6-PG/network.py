@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import copy
 
 
-class NetApproximator(nn.Module):
+class NetApproximator(nn.Module):  # Q 输入为s，输出为所有的（s,a）
     def __init__(self, input_dim=1, output_dim=1, hidden_dim=32):
         '''
         Args:
@@ -33,7 +33,7 @@ class NetApproximator(nn.Module):
         x.requires_grad_ = requires_grad
         x = x.float()  # 从from_numpy转换的数据为DoubleTensor类型
         if x.data.dim == 1:
-            x = x.unsqueeze(0)
+            x = x.unsqueeze(0)  # unsqueeze函数功能忘记了
         return x
 
     def fit(self, x, y, criterion=None, optimizer=None, epochs=1, learning_rate=1e-4):
@@ -52,7 +52,7 @@ class NetApproximator(nn.Module):
             optimizer.step()  # 更新权重
         return loss
 
-    def __call__(self, x):
+    def __call__(self, x):  # 这个函数是怎么用的？
         y_pred = self.forward(x)
         return y_pred.data.numpy()
 
