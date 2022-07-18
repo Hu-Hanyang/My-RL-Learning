@@ -19,12 +19,12 @@ class NetApproximator(nn.Module):  # Q 输入为s，输出为所有的（s,a）
         self.linear2 = torch.nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x):
-        x = self.__prepare_data(x)  # 数据预处理
-        h_relu = F.relu(self.linear1(x))
+        x = self._prepare_data(x)  # 数据预处理
+        h_relu = F.relu(self.linear1(x))  # 全神经网络之间的非线性处理
         y_pred = self.linear2(h_relu)
         return y_pred
 
-    def __prepare_data(self, x, requires_grad=False):
+    def _prepare_data(self, x, requires_grad=False):
         # convert numpy format data to torch variable
         if isinstance(x, np.ndarray):  # isinstance 函数是做什么的?
             x = torch.from_numpy(x)
@@ -33,17 +33,18 @@ class NetApproximator(nn.Module):  # Q 输入为s，输出为所有的（s,a）
         x.requires_grad_ = requires_grad
         x = x.float()  # 从from_numpy转换的数据为DoubleTensor类型
         if x.data.dim == 1:
-            x = x.unsqueeze(0)  # unsqueeze函数功能忘记了
+            x = x.unsqueeze(0)  # unsqueeze函数功能是啥来着？
         return x
 
     def fit(self, x, y, criterion=None, optimizer=None, epochs=1, learning_rate=1e-4):
+        # train + calculate error + back propagate
         if criterion is None:
             criterion = torch.nn.MSELoss(size_average=False)
         if optimizer is None:
             optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
         if epochs < 1:
             epochs = 1
-        y = self.__prepare_data(y, requires_grad=False)
+        y = self._prepare_data(y, requires_grad=False)  # y是选择的认为的真实值，即target
         for t in range(epochs):
             y_pred = self.forward(x)  # 前向传播
             loss = criterion(y_pred, y)

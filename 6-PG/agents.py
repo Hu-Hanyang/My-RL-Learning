@@ -6,6 +6,8 @@
 # Date: July 27, 2017
 
 from random import random, choice
+
+import numpy as np
 from gym import Env
 import gym
 from gridworld import *
@@ -279,7 +281,7 @@ class DDQNAgent(Agent):
                                           output_dim=self.output_dim, hidden_dim=self.hidden_dim)
         self.target_Q = self.behavior_Q.clone()
         self.batch_size = batch_size  # mini-batch学习一次状态转换的数量
-        self.epochs = epochs  # 一次学习对mini-batch个状态转换训练对次数
+        self.epochs = epochs  # 一次学习对mini-batch个状态转换训练的次数
 
     def __update_target_Q(self):
         self.target_Q = self.behavior_Q.clone()
@@ -293,6 +295,7 @@ class DDQNAgent(Agent):
             return int(np.argmax(Q_s))
 
     def learning_method(self, lambda_=0.9, gamma=0.9, alpha=0.1, epsilon=13-5, display=False):
+        # DQN中的Q-learning部分
         self.state = self.env.reset()
         if display:
             self.env.render()
@@ -310,6 +313,28 @@ class DDQNAgent(Agent):
             time_in_episode += 1
         loss /= time_in_episode
         return time_in_episode, total_reward
+
+    def _learn_from_memory(self, gamma, learning_rate):
+        # 从memory中采样
+        trans_pieces = self.sample(self.batch_size)
+        # 从样本中获得s a r s'
+        states_0 = np.vstack([x.s0 for x in trans_pieces])
+        actions_0 = np.array([x.a0 for x in trans_pieces])
+        reward_1 = np.array([x.reward for x in trans_pieces])
+        is_done = np.array([x.is_done for x in trans_pieces])
+        states_1 = np.vstack([x.s1 for x in trans_pieces])
+        # 准备训练数据
+        X_batch = states_0
+        y_batch = self.target_Q(states_0)
+        Q_target = reward_1 + gamma * np.max(self.target_Q(states_1), axis=1) * (~ is_done)
+        loss = self.behavior_Q.fit(x=X_batch, y=y_batch, learning_rate=learning_rate, epochs=self.epochs)
+        mean_loss = loss.sum().data[0] / self.batch_size
+        self.__update_target_Q()
+        return mean_loss
+
+
+
+
 
 
 
