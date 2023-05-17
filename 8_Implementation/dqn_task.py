@@ -34,12 +34,12 @@ writer = SummaryWriter('./dqn_records')
 
 # training
 for episode in tqdm(range(num_episode)):
-    score = 0.0
+    rewards = 0.0
     state, info = env.reset()
     for _ in range(n_update):
         action = agent.choose_action(state)
         next_state, reward, done, _, _ = env.step(action)
-        score += reward
+        rewards += reward
         agent.replay_buffer.push((state, action, reward, next_state, done))
         state = next_state
         agent.train()
@@ -51,7 +51,7 @@ for episode in tqdm(range(num_episode)):
             break
     agent.updatae_target()
     epsilon = np.maximum(epsilon*eps_decay, eps_end)
-    writer.add_scalar("Scores", score, episode)
+    writer.add_scalar("Rewards", rewards, episode)
 
 print("Saving the model.............")
 model_path = "./dqn_model.pt"
